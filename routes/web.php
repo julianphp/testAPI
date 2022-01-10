@@ -15,11 +15,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    Log::channel('writeinlog','sdfsdfsdfsdf');
-    $aa = Patients::dni('12121212Z')->first();
-    if ($aa){
-       // dd('dfsdf');
-    }
-    dd($aa);
     return view('welcome');
 });

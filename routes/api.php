@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\api\PatientsController;
+use \App\Http\Controllers\api\DiagnosisController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,4 +36,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
             Route::get('listAll',[PatientsController::class,'listAll']);
         });
 
+    });
+
+    Route::prefix('diagnosis')->group( function (){
+       Route::group(['middleware' => 'auth:api'], function (){
+          Route::post('new',[DiagnosisController::class,'new']);
+          Route::post('patientListAll',[DiagnosisController::class,'patientListAll']);
+       });
     });

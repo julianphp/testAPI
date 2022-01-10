@@ -133,7 +133,6 @@ class PatientsController extends Controller
     }
 
    public function listAll(){
-
         $allPatients = Patients::select('fullName','DNI')->get()->toArray();
         $response = ['error' => false];
         $response += $allPatients;

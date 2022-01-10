@@ -17,9 +17,7 @@ class Patients extends Model
     }
 
     public function scopeDni($query, $dni){
-        if ($dni){
-            return $query->where('dni',$dni)->first();
-        }
+            return $query->where('DNI',(string)$dni);
     }
 
 
