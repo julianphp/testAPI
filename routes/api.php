@@ -18,13 +18,21 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 */
+
+    Route::fallback(function(){
+        return response()->json([
+            'error' => 'Url incorrecta.'], 404);
+    });
     Route::post('login',[\App\Http\Controllers\api\AuthLoginController::class,'login']);
 
-    Route::prefix('patient')->group( function (){
-        Route::get('new/{name}/{dni}', [PatientsController::class,'new']);
+    Route::prefix('patient')->group(function (){
 
-        //Route::group(['middleware' => 'auth:api'], function(){
-            Route::post('data/{dni}',[PatientsController::class,'details'])->middleware('auth:api');
-        //});
+        Route::group(['middleware' => 'auth:api'], function(){
+            Route::post('new', [PatientsController::class,'new']); // ["fullname","dni"]
+            Route::post('edit',[PatientsController::class,'edit']);
+            Route::post('details',[PatientsController::class,'detail']);
+            Route::post('delete',[PatientsController::class,'delete']);
+            Route::get('listAll',[PatientsController::class,'listAll']);
+        });
 
     });

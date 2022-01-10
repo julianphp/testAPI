@@ -10,8 +10,16 @@ class Patients extends Model
     protected $table = "patients";
     protected $primaryKey = "id";
     protected $fillable = ["fullName","DNI"];
+
+
     public function Diagnosis(){
         return $this->hasMany(Diagnosis::class,'idPatient','id');
+    }
+
+    public function scopeDni($query, $dni){
+        if ($dni){
+            return $query->where('dni',$dni)->first();
+        }
     }
 
 

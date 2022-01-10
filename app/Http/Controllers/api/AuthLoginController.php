@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -19,11 +20,13 @@ class AuthLoginController extends Controller
                 'msg' => 'Las credenciales no son correctas'
             ]);
         }
-        $token = Auth::user()->createToken(23234234234);
-
+        $tokenResult = Auth::user()->createToken(Auth::user()->email);
+        $token  = $tokenResult->token;
+        $token->expires_at = Carbon::now()->addWeek();
+        $token->save();
         return response()->json([
             'error' => false,
-            'token_2' => $token->accessToken
+            'token' => $tokenResult->accessToken
         ]);
     }
 }
