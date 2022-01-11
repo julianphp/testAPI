@@ -16,10 +16,10 @@ class Localization
      */
     public function handle(Request $request, Closure $next)
     {
-        $locale = $request->input('lang');
+        $locale = $request->header('lang');
         if (in_array($locale, config('app.locales'), true)){
-            \App::setLocale($request->input('lang'));
-            session()->put('locale',$request->input('lang'));
+            \App::setLocale($locale);
+            session()->put('locale',$locale);
         } else {
             \App::setLocale(config('app.fallback_locale'));
             session()->put('locale',config('app.fallback_locale'));

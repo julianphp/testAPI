@@ -1,24 +1,45 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
 
-## About Laravel
+# <p style="center">Servicio API Diagnostico Pacientes</p> 
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Este mini-proyecto consiste en la creacion de una API sobre Laravel 8 y PHP 7.4/8.1, sobre las que realiza operaciones 
+sobre pacientes y diagnosticos, en el cual, para realizar las operaciones, sera necesario contar con un Token de
+autorizacion.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Uso de la API
+<p>El desarrollo de la API, se ha realizado mediente la libreria de laravel/passport, la cual nos proporciona un amplio
+soporte para el uso de <b>OAuth2</b>.</p>
+<p>El servicio cuenta con distintas operaciones a relizar, principalmente sobre los pacientes y sus diagnosticos.</p>
+<p>Para la realizacion del proyecto se ha usado <b>Postman</b>.
+<p>Primero sera necesario contar con un usuario registrado en la plataforma.</p>
+<p>Luego sera necesario hacer login que nos devolvera nuestro <b>Bearer Token</b>, en cual sera necesario enviar mediante el <b>"header"</b>>
+con la "key" de <b>Authorization</b> y el "value" con <b>"Bearer ~NuestroToken~"</b> para autenticarse en cada operacion. </p>
+<p>Adicionalmente, en cada peticion, podemos indicar el lenguaje en el cual mostrar los distintos mensajes, con la key <b>lang</b>
+y el idioma preferido.</p>
+<p>En nuestro caso de uso, la URL para las peticiones parte a partir de <b>example.app/public/api</b>.</p>
 
+## Parametros necesarios en Headers
+- ['Accept' => 'application/json'] - Para la correcta transmision de datos.
+- ['Authorization' => 'Bearer ~Nuestro Token~ '] - Necesario para identificarse ante el servidor. Se obtiene al hacer login.
+- ['lang' => 'es'|'en'] - Idioma en el que mostrar los mensajes.
+## Peticion API disponibles
+- [ URL, TYPE POST|GET, (PARAMS), return, Details]
+- [**register**, **POST**, ('email => string','password => string|min:4'), Permite el registro en la aplicacion.]
+- [**login**, **POST**, ('email','password'), Return => Bearer Token]
+- **Requiere Bearer Token**
+  - [**logout**, **GET**, ('Bearer Token'), Cierra la session y revoca el token.]
+  - **patient** GROUP ROUTES
+    - [**new**, **POST**, ('fullname => string|max:255'','personalidentification' => string|DNI|NIE), Return => Los datos del paciente, Da de alta un nuevo paciente]
+    - [**edit**, **POST**, ('fullname','personalidentification'), Return => Los datos del paciente editados. Edita el Nombre del paciente.]
+    - [**details**, **POST**, ('personalidentification'), Return => Los datos del paciente solicitado. Consulta los detalles de un paciente dado.]
+    - [**delete**, **POST**, ('personalidentification', 'force' => 0|1), Borra un paciente, en el caso de que tenga diagnosticos asociados, se debera hacer uso de la opcion force para borrar todo.]
+    - [**listAll**, **GET**, (), Listado con todos los pacientes, nombre e identificacion.]
+  -**diagnosis**  GROUP ROUTES
+    - [**new**, **POST**, ('diagnosis => string|max:2000'','personalidentification' => string|DNI|NIE), Return => Los datos del paciente y el diagnostico, Crea un nuevo diagnostico sobre un paciente dado.]
+    - [**patientListAll**, **POST**, ('personalidentification', Return => Nombre y diagnosticos del paciente, Muestra los diagnosticos de un paciente.]
+
+## Returns
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
 ## Learning Laravel

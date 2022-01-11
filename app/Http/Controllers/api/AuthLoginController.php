@@ -15,6 +15,8 @@ class AuthLoginController extends Controller
 
     /**
      * @param Request $req
+     * @string $email
+     * @string $password
      * @return JsonResponse
      */
     public function login(Request $req): JsonResponse

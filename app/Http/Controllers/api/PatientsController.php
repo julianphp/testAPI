@@ -18,6 +18,8 @@ class PatientsController extends Controller
     /**
      * Create a new patient.
      * @param Request $request
+     * @string $fullname
+     * @string $personalidentification
      * @return \Illuminate\Http\JsonResponse
      * POST ['fullname','personalidentification'] /api/patient/new
      */
@@ -26,7 +28,7 @@ class PatientsController extends Controller
         $response = [];
 
         $fullName = $request->input('fullname');
-        $dni = $request->input('personalidentification');
+        $personalidentification = $request->input('personalidentification');
         $request->validate([
             'fullname' => 'regex:/^[\pL\s\.\'\-]+$/u|max:255',
             'personalidentification' => ['unique:patients,personalIdentification','regex:/^([0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKE])|([XYZ][0-9]{7}[TRWAGMYFPDXBNJZSQVHLCKE])$/i']
@@ -42,7 +44,7 @@ class PatientsController extends Controller
 
                 $patient = new Patients();
                 $patient->fullName = $fullName;
-                $patient->personalIdentification = $dni;
+                $patient->personalIdentification = $personalidentification;
                 $patient->save();
 
                 $response += [
@@ -65,6 +67,8 @@ class PatientsController extends Controller
     /**
      * Edit the name of a given patient
      * @param Request $request
+     * @string $fullname
+     * @string $personalidentification
      * @return \Illuminate\Http\JsonResponse
      * POST ['personalidentification','fullname'] /api/patient/edit
      */
@@ -121,6 +125,7 @@ class PatientsController extends Controller
     /**
      * Return the details(fullname, personalidentification) of a given patient.
      * @param Request $request
+     * @string $personalidentification
      * @return \Illuminate\Http\JsonResponse
      * POST ['personalidentification'] /api/patient/details
      */
@@ -145,6 +150,7 @@ class PatientsController extends Controller
      * Delete a given patient. If have diagnosis associated, it will not delete
      * To force delete a patient with diagnosis, include "force=1" param in POST.
      * @param Request $request
+     * @string $personalidentification
      * @return \Illuminate\Http\JsonResponse|void
      * POST ['personalidentification','force'] /api/patient/delete
      */
@@ -228,7 +234,7 @@ class PatientsController extends Controller
                'msg' => trans('messages.error_process_request')
            ]);
        }
-        $response = ['error' => trans('patients.error_fullname_format')];
+        $response = ['error' => false];
         $response += $allPatients;
         return response()->json($response);
    }

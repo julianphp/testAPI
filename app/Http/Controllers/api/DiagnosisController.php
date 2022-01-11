@@ -17,6 +17,8 @@ class DiagnosisController extends Controller
     /**
      * Create a new diagnosis for a given patient.
      * @param Request $request
+     * @string $diagnosis
+     * @string $personalidentification
      * @return \Illuminate\Http\JsonResponse
      *  POST ['personalidentification','description'] /api/diagnosis/new
      */
@@ -73,6 +75,7 @@ class DiagnosisController extends Controller
     /**
      * List all diagnosis for a given patient.
      * @param Request $request
+     * @string $personalidentification
      * @return \Illuminate\Http\JsonResponse
      * POST ['personalidentification']  /api/diagnosis/patientListAll
      */

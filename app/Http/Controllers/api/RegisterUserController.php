@@ -12,6 +12,12 @@ class RegisterUserController extends Controller
 {
     //
 
+    /**
+     * @param Request $request
+     * @string email
+     * @string password
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function new(Request $request): \Illuminate\Http\JsonResponse
     {
         $request->validate([
