@@ -40,21 +40,40 @@ y el idioma preferido.</p>
     - [**"patientListAll"**, **POST**, ('personalidentification', Return => Nombre y diagnosticos del paciente, Muestra los diagnosticos de un paciente.]
 
 ## Returns
-<p>Cada vez que se devuelva una respuesta del servidor, siempre lo hara acompaño del parametro **error**, con un **true|false** indicando
-si la llamada se ha llevado correctamente a cabo, o por el contrario, estara acompañado de un mensaje de error en **msg**.
+<p>Cada vez que se devuelva una respuesta del servidor, siempre lo hara acompaño del parametro <b>error</b>, con un <b>true|false</b> indicando
+si la llamada se ha llevado correctamente a cabo, o por el contrario, estara acompañado de un mensaje de error en <b>msg</b>.</p>
+<p>
 Tambien es posible que devuelva un mensaje de error distinto al llevar a cabo la validacion de los parametros, indicando cual es erroneo.
 </p>
 
-## Learning Laravel
+## Test
+Se ha llevado a cabo la realizacion de test para el testeo de las funciones descritas anteriormente. Se pueden ejecutar en
+**"tests/Feature"** el archivo llamado **"PatientDiagnosisTest"**.
+> **Aviso!** Es posible que durante la ejecucion de los test, se requiera la escritura en **"storage/logs/laravel-xxxx-xx-xx.log"**
+> e indique que no es posible escribir en el, para ello, sera necesario elimar el archivo a mano, ya que difiere de los permisos
+> de Apache2.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Base de Datos 
+Se ha realizado sobre MariaDB 10.6. Se ha usado la codificacion "utf8_unicode_ci".
+<p>Para guardar el historial de ediciones/creaciones sobre las tablas patients y diagnosis, se ha optado en realizarlo sobre la propia Base de Datos, y 
+llevando el registro manualmente en los controladores.
+El motivo es para facilitar la consulta de los datos a posteriori, ademas de guardar mas informacion en el caso de ser necesario y el usuario que lo realizo.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
+Se han creado las siguientes tablas:
+</br>
+- **users** ('id' PK int(11) UNSIGNED AU, 'email' varchar(255),'password', varchar(256), 'created_at' timestamp,'updated_at' timestamp). 
+  - Tabla que almacena los usuario registrados. 
+- **patients**('id' PK int(11) UNSIGNED AU,'fullName' varchar(255),'personalIdentification' varchar(9) index,'created_at' timestamp,'updated_at' timestamp).
+  - Tabla que almacena los pacientes. Si un paciente tiene diagnosticos asociados, no se podra borrar, no se ha realizado un "ON DELETE CASCADE", para controlarlo en el controlador.
+- **patients_history_log** ('id' int(11) UNSIGNED AU, 'patId' int(11) UNSIGNED, 'editBy' int(11) UNSIGNED, 'oldFullName' varchar(255), 'oldPersonalIdentification' varchar(9),'created_at' timestamp, 'updated_at' timestramp)
+  - Tabla que almacena el historia de ediciones sobre la tabla **patients**. No se han vinculado con FK sobre la tabla patients, por si en el futuro se quiere consultar el registro de cambios y quien lo realizo.
+- **diagnosis** ('id' PK int(11) UNSIGNED AU, 'idPatient' FK patients(id),'description' varchar(2000), 'date' timestamp, 'created_at' timestamp, 'updated_at' timestamp )
+  - Tabla que almacena los diagnosticos de los pacientes.
+- **diagnosis_history_log** ('id' PK int(11) UNSIGNED AU, 'idReg' int(11) UNSIGNED, 'editBy' int(11) UNSIGNED, 'oldDescription' varchar(2000), 'oldDate' tiemstamp, 'created_at' timestamp, 'updated_at' timestramp)
+  - Tabla que almacena el historial de ediciones sobre la tabla **diagnosis**. No se ha vinculado con FK sobre la tabla diagnosis, para que en caso de borrar la informacion, se guarde el registro de cambios en caso de que fuera necesario consultar a posterior y quien lo edito.
+- **oauth_access_tokens**,**oauth_auth_codes**,**oauth_clients**,**oauth_personal_access_clients**,**oauth_refresh_tokens**
+  - Tablas generadas automaticamente al usar el paquete de laravel/passport y necesarias para la autenticacion y almacenamiento de los Tokens.
+</p>
 ### Premium Partners
 
 - **[Vehikl](https://vehikl.com/)**
