@@ -73,6 +73,9 @@ Se han creado las siguientes tablas:
   - Tabla que almacena el historial de ediciones sobre la tabla **diagnosis**. No se ha vinculado con FK sobre la tabla diagnosis, para que en caso de borrar la informacion, se guarde el registro de cambios en caso de que fuera necesario consultar a posterior y quien lo edito.
 - **oauth_access_tokens**,**oauth_auth_codes**,**oauth_clients**,**oauth_personal_access_clients**,**oauth_refresh_tokens**
   - Tablas generadas automaticamente al usar el paquete de laravel/passport y necesarias para la autenticacion y almacenamiento de los Tokens.
+
+** Dise;o de la Base de Datos **
+[Imgur](https://imgur.com/si1c93f)
 </p>
 ### Premium Partners
 
