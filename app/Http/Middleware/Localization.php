@@ -17,7 +17,6 @@ class Localization
     public function handle(Request $request, Closure $next)
     {
         $locale = $request->input('lang');
-        \Log::channel('daily')->debug(config('app.locales'));
         if (in_array($locale, config('app.locales'), true)){
             \App::setLocale($request->input('lang'));
             session()->put('locale',$request->input('lang'));

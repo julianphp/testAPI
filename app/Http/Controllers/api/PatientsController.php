@@ -228,7 +228,7 @@ class PatientsController extends Controller
                'msg' => trans('messages.error_process_request')
            ]);
        }
-        $response = ['error' => false];
+        $response = ['error' => trans('patients.error_fullname_format')];
         $response += $allPatients;
         return response()->json($response);
    }
