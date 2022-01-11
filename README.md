@@ -25,9 +25,33 @@ Empezamos clonado este mismo repositorio en donde deseemos. Deberemos de tener i
 Entramos dentro de la carpeta "testAPI", sera realizar la instalacion de las dependencias y librerias con:
 <br>
 <code> composer install </code>
+<br>
+Configuramos el archivo ".env", para ello renombramos el archivo ".env.example" a ".env" para usarlo de base. En este archivo sera 
+necesario, configurar el acceso a la BD, para en los parametros siguientes ajustamos segun la instalacion.
+> DB_HOST= IP de donde se este ejecutando MariaDB, si es la misma maquina: 127.0.0.1
+> 
+> DB_PORT= Puerto del MariaDb, por defecto 3036
+> 
+> DB_DATABASE= Nombre de la base de datos
+> 
+> DB_USER= usuario para acceder a MariaDB
+> 
+> DB_PASS= contrase;a para acceder a MariaDB, dejar en blanco si no requiere.
 
+<br\>
+Generamos las keys necesarias para Laravel y Oauth2, situados en nuestro proyecto.
+<br>
+<code> php artisan key:generate </code>
+<br>
+<code> php artisan passport:install --force </code>
+<br>
 
-php artisan passport:install --force
+Para finalizar, ejecutamos el servidor con
+
+<code> php artisan serve </code>
+
+Podemos comprobar que funciona si entramos en la url que nos muestra y ver el inicio.
+> **Recuerda!** Recuerda que nuestra base para ejecutar las peticiones sera tal que http://127.0.0.1:8000/api/
 
 ## Uso de la API
 <p>El desarrollo de la API, se ha realizado mediente la libreria de laravel/passport, la cual nos proporciona un amplio
@@ -39,7 +63,7 @@ soporte para el uso de <b>OAuth2</b>.</p>
 con la "key" de <b>Authorization</b> y el "value" con <b>"Bearer ~NuestroToken~"</b> para autenticarse en cada operacion. </p>
 <p>Adicionalmente, en cada peticion, podemos indicar el lenguaje en el cual mostrar los distintos mensajes, con la key <b>lang</b>
 y el idioma preferido.</p>
-<p>En nuestro caso de uso, la URL para las peticiones parte a partir de <b>example.app/public/api</b>.</p>
+
 
 ## Parametros necesarios en Headers
 - ['Accept' => 'application/json'] - Para la correcta transmision de datos.
@@ -49,7 +73,7 @@ y el idioma preferido.</p>
 - [ URL, TYPE POST|GET, (PARAMS), return, Details]
 - [**"register"**, **POST**, ('email => string','password => string|min:4'), Permite el registro en la aplicacion.]
 - [**"login"**, **POST**, ('email','password'), Return => Bearer Token]
-- **Requiere Bearer Token** // localhost/public/api/patient/delete
+- **Requiere Bearer Token** // localhost/api/patient/delete
   - [**"logout"**, **GET**, ('Bearer Token'), Cierra la session y revoca el token.]
   - **"patient"** GROUP ROUTES
     - [**"new"**, **POST**, ('fullname => string|max:255'','personalidentification' => string|DNI|NIE), Return => Los datos del paciente, Da de alta un nuevo paciente]
@@ -57,7 +81,7 @@ y el idioma preferido.</p>
     - [**"details"**, **POST**, ('personalidentification'), Return => Los datos del paciente solicitado. Consulta los detalles de un paciente dado.]
     - [**"delete"**, **POST**, ('personalidentification', 'force' => 0|1), Borra un paciente, en el caso de que tenga diagnosticos asociados, se debera hacer uso de la opcion force para borrar todo.]
     - [**"listAll"**, **GET**, (), Listado con todos los pacientes, nombre e identificacion.]
-  -**"diagnosis"**  GROUP ROUTES // example.app/public/api/diagnosis/patientListAll
+  -**"diagnosis"**  GROUP ROUTES // example.app/api/diagnosis/patientListAll
     - [**"new"**, **POST**, ('diagnosis => string|max:2000'','personalidentification' => string|DNI|NIE), Return => Los datos del paciente y el diagnostico, Crea un nuevo diagnostico sobre un paciente dado.]
     - [**"patientListAll"**, **POST**, ('personalidentification', Return => Nombre y diagnosticos del paciente, Muestra los diagnosticos de un paciente.]
 
