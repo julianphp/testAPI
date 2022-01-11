@@ -7,6 +7,28 @@ Este mini-proyecto consiste en la creacion de una API sobre Laravel 8 y PHP 7.4/
 sobre pacientes y diagnosticos, en el cual, para realizar las operaciones, sera necesario contar con un Token de
 autorizacion.
 
+## Despliegue
+Para el despligue se va a relizar sobre Ubuntu 20.04 y Apache2. Se hace uso de PHP 8.1, Composer 2.x y MariaDB 10.X con PHPMyAdmin.
+Se han ejecutado las llamadas con **Postman**.
+<br>
+Aunque siempre podremos realizar un despliegue en pruebas con ** php artisan serve**, el cual nos mostrara una ruta y puerto local en donde 
+se estara ejecutando el servicio, por la facilidad de este, realizaremos la ejecucion sobre este.
+<br>
+Para instalar composer visite: [Tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-composer-on-ubuntu-20-04-es)
+<br>
+Para instalar MariaDB, visite: [Tutorial](https://computingforgeeks.com/how-to-install-mariadb-on-ubuntu-focal-fossa/)
+<br>
+Empezamos clonado este mismo repositorio en donde deseemos. Deberemos de tener instalado previamente la herramienta "git".
+<br>
+<code> https://github.com/julianphp/testAPI </code>
+<br>
+El siguiente paso, sera realizar la instalacion de las dependencias y librerias con:
+<br>
+<code> composer install </code>
+
+
+php artisan passport:install --force
+
 ## Uso de la API
 <p>El desarrollo de la API, se ha realizado mediente la libreria de laravel/passport, la cual nos proporciona un amplio
 soporte para el uso de <b>OAuth2</b>.</p>
@@ -47,20 +69,24 @@ Tambien es posible que devuelva un mensaje de error distinto al llevar a cabo la
 </p>
 
 ## Test
-Se ha llevado a cabo la realizacion de test para el testeo de las funciones descritas anteriormente. Se pueden ejecutar en
-**"tests/Feature"** el archivo llamado **"PatientDiagnosisTest"**.
+Se ha llevado a cabo la realizacion de test para el testeo de las funciones descritas anteriormente. Se pueden encontrar  en
+**"tests/Feature"** el archivo llamado **"PatientDiagnosisTest"**. 
+<br> 
+Podemos ejecutar los test, en nuestra carpeta del proyecto con **"php artisan test"**.
 > **Aviso!** Es posible que durante la ejecucion de los test, se requiera la escritura en **"storage/logs/laravel-xxxx-xx-xx.log"**
 > e indique que no es posible escribir en el, para ello, sera necesario elimar el archivo a mano, ya que difiere de los permisos
 > de Apache2.
 
 ## Base de Datos 
-Se ha realizado sobre MariaDB 10.6. Se ha usado la codificacion "utf8_unicode_ci".
-<p>Para guardar el historial de ediciones/creaciones sobre las tablas patients y diagnosis, se ha optado en realizarlo sobre la propia Base de Datos, y 
+Se ha realizado sobre MariaDB 10.6. <br>
+Se ha usado la codificacion "utf8_unicode_ci". La DB se encuentra en **"/storage/db/db_service.sql"**, necesitara crear una nueva DB para poder importarla.
+<p>
+Para guardar el historial de ediciones/creaciones sobre las tablas patients y diagnosis, se ha optado en realizarlo sobre la propia Base de Datos, y 
 llevando el registro manualmente en los controladores.
 El motivo es para facilitar la consulta de los datos a posteriori, ademas de guardar mas informacion en el caso de ser necesario y el usuario que lo realizo.
 
 Se han creado las siguientes tablas:
-</br>
+
 - **users** ('id' PK int(11) UNSIGNED AU, 'email' varchar(255),'password', varchar(256), 'created_at' timestamp,'updated_at' timestamp). 
   - Tabla que almacena los usuario registrados. 
 - **patients**('id' PK int(11) UNSIGNED AU,'fullName' varchar(255),'personalIdentification' varchar(9) index,'created_at' timestamp,'updated_at' timestamp).
@@ -74,9 +100,11 @@ Se han creado las siguientes tablas:
 - **oauth_access_tokens**,**oauth_auth_codes**,**oauth_clients**,**oauth_personal_access_clients**,**oauth_refresh_tokens**
   - Tablas generadas automaticamente al usar el paquete de laravel/passport y necesarias para la autenticacion y almacenamiento de los Tokens.
 
-** Dise;o de la Base de Datos **
-[Imgur](https://imgur.com/si1c93f)
+**Dise;o de la Base de Datos**
+<br>
+[Image](https://imgur.com/si1c93f)
 </p>
+
 ### Premium Partners
 
 - **[Vehikl](https://vehikl.com/)**
