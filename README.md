@@ -22,7 +22,7 @@ Empezamos clonado este mismo repositorio en donde deseemos. Deberemos de tener i
 <br>
 <code> https://github.com/julianphp/testAPI </code>
 <br>
-El siguiente paso, sera realizar la instalacion de las dependencias y librerias con:
+Entramos dentro de la carpeta "testAPI", sera realizar la instalacion de las dependencias y librerias con:
 <br>
 <code> composer install </code>
 
