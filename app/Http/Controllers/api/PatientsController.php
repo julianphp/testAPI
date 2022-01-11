@@ -28,16 +28,14 @@ class PatientsController extends Controller
         $fullName = $request->input('fullname');
         $dni = $request->input('personalidentification');
         $request->validate([
-            'fullname' => 'regex:/^[\pL\s\-]+$/u|max:75',
-            'dni' => ['unique:patients,personalIdentification','regex:/^([0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKE])|([XYZ][0-9]{7}[TRWAGMYFPDXBNJZSQVHLCKE])$/i']
-            //'dni' => 'regex:/^[0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKE]$/i'
+            'fullname' => 'regex:/^[\pL\s\.\'\-]+$/u|max:255',
+            'personalidentification' => ['unique:patients,personalIdentification','regex:/^([0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKE])|([XYZ][0-9]{7}[TRWAGMYFPDXBNJZSQVHLCKE])$/i']
         ],[
-            'fullname.regex' => trans('patients.error_fullname'),
+            'fullname.regex' => trans('patients.error_fullname_format'),
             'fullname.max' => trans('patients.error_fullname'),
-            'dni.unique' => trans('patients.error_personalid_taken'),
-            'dni.regex' => trans('patients.error_personalid_incorrect')
+            'personalIdentification.unique' => trans('patients.error_personalid_taken'),
+            'personalIdentification.regex' => trans('patients.error_personalid_incorrect')
         ]);
-
         if (empty($response)){
             try {
                 DB::beginTransaction();
@@ -81,9 +79,10 @@ class PatientsController extends Controller
             ]);
         }
         $request->validate([
-            'fullname' => 'regex:/^[\pL\s\-]+$/u|max:75'
+            'fullname' => 'regex:/^[\pL\s\.\'\-]+$/u|max:255'
         ],[
             'fullname.regex' => trans('patients.error_fullname'),
+            'fullname.max' => trans('patients.error_fullname'),
         ]);
 
         try {
@@ -113,6 +112,7 @@ class PatientsController extends Controller
 
 
         return response()->json([
+            'error' => false,
             'fullName' => $patient->fullName,
             'dni' => $patient->personalIdentification
         ]);
@@ -122,7 +122,7 @@ class PatientsController extends Controller
      * Return the details(fullname, personalidentification) of a given patient.
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * POST ['personalidentification'] /api/patient/detail
+     * POST ['personalidentification'] /api/patient/details
      */
     public function detail(Request $request): \Illuminate\Http\JsonResponse
     {

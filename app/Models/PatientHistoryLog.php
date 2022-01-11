@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PatientHistoryLog extends Model
 {
-    protected $table = 'patient_history_log';
+    protected $table = 'patients_history_log';
     protected $primaryKey = 'id';
 
 }

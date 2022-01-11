@@ -32,13 +32,13 @@ class DiagnosisController extends Controller
         }
 
         $request->validate([
-            'description' => 'string|max:2000'
+            'diagnosis' => 'string|max:2000'
         ]);
         try {
             DB::beginTransaction();
             $diagnosis = new Diagnosis();
             $diagnosis->idPatient = $patient->id;
-            $diagnosis->description = $request->input('description');
+            $diagnosis->description = $request->input('diagnosis');
             $diagnosis->date = Carbon::now();
             $diagnosis->save();
 
@@ -46,7 +46,7 @@ class DiagnosisController extends Controller
             $logHistory->idReg = $diagnosis->id;
             $logHistory->editBy = Auth::user()->id;
             $logHistory->oldDescription = $diagnosis->description;
-            $logHistory->oldDate = $diagnosis->date;
+            $logHistory->oldDate = Carbon::make($diagnosis->date);
             $logHistory->save();
 
             DB::commit();

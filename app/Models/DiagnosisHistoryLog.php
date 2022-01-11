@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class DiagnosisHistoryLog extends Model
 {
 
-    protected $table = 'diagnosis_history';
+    protected $table = 'diagnosis_history_log';
     protected $primaryKey = 'id';
 
 
