@@ -4,8 +4,11 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Diagnosis;
+use App\Models\PatientHistoryLog;
 use App\Models\Patients;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 use function response;
@@ -36,17 +39,25 @@ class PatientsController extends Controller
         ]);
 
         if (empty($response)){
-            $patient = new Patients();
-            $patient->fullName = $fullName;
-            $patient->personalIdentification = $dni;
-            $patient->save();
+            try {
+                DB::beginTransaction();
 
-            $response += [
-                'error' => false,
-                'fullName' => $patient->fullName,
-                'personalIdentification' => $patient->personalIdentification,
-            ];
-            Log::info($patient);
+                $patient = new Patients();
+                $patient->fullName = $fullName;
+                $patient->personalIdentification = $dni;
+                $patient->save();
+
+                $response += [
+                    'error' => false,
+                    'fullName' => $patient->fullName,
+                    'personalIdentification' => $patient->personalIdentification,
+                ];
+                DB::commit();
+            } catch (\Exception $e){
+                DB::rollBack();
+                Log::channel('daily')->debug($e);
+            }
+
 
         }
 
@@ -75,8 +86,31 @@ class PatientsController extends Controller
             'fullname.regex' => trans('patients.error_fullname'),
         ]);
 
-        $patient->fullName = $request->input('fullname');
-        $patient->save();
+        try {
+
+            DB::beginTransaction();
+            //save log
+            $patientSaveLog = new PatientHistoryLog();
+            $patientSaveLog->patId = $patient->id;
+            $patientSaveLog->editBy = Auth::user()->id;
+            $patientSaveLog->oldFullName = $patient->fullName;
+            $patientSaveLog->oldPersonalIdentification = $patient->personalIdentification;
+            $patientSaveLog->save();
+
+            $patient->fullName = $request->input('fullname');
+            $patient->save();
+
+            DB::commit();
+        } catch (\Exception $e){
+            DB::rollBack();
+            Log::channel('daily')->debug($e);
+
+            return response()->json([
+                'error' => true,
+                'msg' => trans('messages.error_process_request')
+            ]);
+        }
+
 
         return response()->json([
             'fullName' => $patient->fullName,
@@ -125,7 +159,17 @@ class PatientsController extends Controller
         }
 
         if ($patient->Diagnosis->count() === 0){
-            $patient->delete();
+            try {
+                $patient->delete();
+            } catch (\Exception $e){
+                Log::channel('daily')->debug($e);
+
+                return response()->json([
+                    'error' => true,
+                    'msg' => trans('messages.error_process_request')
+                ]);
+            }
+
 
             return response()->json([
                 'error' => false,
@@ -143,8 +187,23 @@ class PatientsController extends Controller
 
         // if a force is indicated in the request, then it will delete the diagnostics as well.
         if ((int)$request->input('force') === 1){
-            Diagnosis::where('id', \Arr::pluck($patient->Diagnosis, 'id'))->delete();
-            $patient->delete();
+            try {
+                DB::beginTransaction();
+
+                Diagnosis::where('id', \Arr::pluck($patient->Diagnosis, 'id'))->delete();
+                $patient->delete();
+
+                DB::commit();
+            } catch (\Exception $e){
+                DB::rollBack();
+                Log::channel('daily')->debug($e);
+
+                return response()->json([
+                    'error' => true,
+                    'msg' => trans('messages.error_process_request')
+                ]);
+            }
+
 
             return response()->json([
                 'error' => false,
@@ -160,7 +219,15 @@ class PatientsController extends Controller
      */
    public function listAll(): \Illuminate\Http\JsonResponse
    {
-        $allPatients = Patients::select('fullName','personalIdentification')->get()->toArray();
+       try {
+           $allPatients = Patients::select('fullName','personalIdentification')->get()->toArray();
+       } catch (\Exception $e) {
+           Log::channel('daily')->debug($e);
+           return response()->json([
+               'error' => true,
+               'msg' => trans('messages.error_process_request')
+           ]);
+       }
         $response = ['error' => false];
         $response += $allPatients;
         return response()->json($response);

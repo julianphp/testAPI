@@ -4,8 +4,11 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Diagnosis;
+use App\Models\DiagnosisHistoryLog;
 use App\Models\Patients;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -31,11 +34,32 @@ class DiagnosisController extends Controller
         $request->validate([
             'description' => 'string|max:2000'
         ]);
+        try {
+            DB::beginTransaction();
+            $diagnosis = new Diagnosis();
+            $diagnosis->idPatient = $patient->id;
+            $diagnosis->description = $request->input('description');
+            $diagnosis->date = Carbon::now();
+            $diagnosis->save();
 
-        $diagnosis = new Diagnosis();
-        $diagnosis->idPatient = $patient->id;
-        $diagnosis->description = $request->input('description');
-        $diagnosis->save();
+            $logHistory = new DiagnosisHistoryLog();
+            $logHistory->idReg = $diagnosis->id;
+            $logHistory->editBy = Auth::user()->id;
+            $logHistory->oldDescription = $diagnosis->description;
+            $logHistory->oldDate = $diagnosis->date;
+            $logHistory->save();
+
+            DB::commit();
+        } catch (\Exception $e){
+            DB::rollBack();
+            Log::channel('daily')->debug($e);
+
+            return response()->json([
+                'error' => true,
+                'msg' => trans('messages.error_process_request')
+            ]);
+        }
+
 
         return response()->json([
             'error' => false,
@@ -67,9 +91,19 @@ class DiagnosisController extends Controller
             'fullName' => $patient->fullName,
             'diagnosis' => []
             ];
-        $response['diagnosis'] += Diagnosis::select('description AS diagnosis','date')
-                                            ->where('idPatient',$patient->id)
-                                            ->get()->toArray();
+
+        try {
+            $response['diagnosis'] += Diagnosis::select('description AS diagnosis','date')
+                ->where('idPatient',$patient->id)
+                ->get()->toArray();
+        } catch (\Exception $e){
+            Log::channel('daily')->debug($e);
+            return response()->json([
+                'error' => true,
+                'msg' => trans('messages.error_process_request')
+            ]);
+        }
+
 
         return response()->json($response);
     }
