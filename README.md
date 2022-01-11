@@ -25,22 +25,25 @@ y el idioma preferido.</p>
 - ['lang' => 'es'|'en'] - Idioma en el que mostrar los mensajes.
 ## Peticion API disponibles
 - [ URL, TYPE POST|GET, (PARAMS), return, Details]
-- [**register**, **POST**, ('email => string','password => string|min:4'), Permite el registro en la aplicacion.]
-- [**login**, **POST**, ('email','password'), Return => Bearer Token]
-- **Requiere Bearer Token**
-  - [**logout**, **GET**, ('Bearer Token'), Cierra la session y revoca el token.]
-  - **patient** GROUP ROUTES
-    - [**new**, **POST**, ('fullname => string|max:255'','personalidentification' => string|DNI|NIE), Return => Los datos del paciente, Da de alta un nuevo paciente]
-    - [**edit**, **POST**, ('fullname','personalidentification'), Return => Los datos del paciente editados. Edita el Nombre del paciente.]
-    - [**details**, **POST**, ('personalidentification'), Return => Los datos del paciente solicitado. Consulta los detalles de un paciente dado.]
-    - [**delete**, **POST**, ('personalidentification', 'force' => 0|1), Borra un paciente, en el caso de que tenga diagnosticos asociados, se debera hacer uso de la opcion force para borrar todo.]
-    - [**listAll**, **GET**, (), Listado con todos los pacientes, nombre e identificacion.]
-  -**diagnosis**  GROUP ROUTES
-    - [**new**, **POST**, ('diagnosis => string|max:2000'','personalidentification' => string|DNI|NIE), Return => Los datos del paciente y el diagnostico, Crea un nuevo diagnostico sobre un paciente dado.]
-    - [**patientListAll**, **POST**, ('personalidentification', Return => Nombre y diagnosticos del paciente, Muestra los diagnosticos de un paciente.]
+- [**"register"**, **POST**, ('email => string','password => string|min:4'), Permite el registro en la aplicacion.]
+- [**"login"**, **POST**, ('email','password'), Return => Bearer Token]
+- **Requiere Bearer Token** // localhost/public/api/patient/delete
+  - [**"logout"**, **GET**, ('Bearer Token'), Cierra la session y revoca el token.]
+  - **"patient"** GROUP ROUTES
+    - [**"new"**, **POST**, ('fullname => string|max:255'','personalidentification' => string|DNI|NIE), Return => Los datos del paciente, Da de alta un nuevo paciente]
+    - [**"edit"**, **POST**, ('fullname','personalidentification'), Return => Los datos del paciente editados. Edita el Nombre del paciente.]
+    - [**"details"**, **POST**, ('personalidentification'), Return => Los datos del paciente solicitado. Consulta los detalles de un paciente dado.]
+    - [**"delete"**, **POST**, ('personalidentification', 'force' => 0|1), Borra un paciente, en el caso de que tenga diagnosticos asociados, se debera hacer uso de la opcion force para borrar todo.]
+    - [**"listAll"**, **GET**, (), Listado con todos los pacientes, nombre e identificacion.]
+  -**"diagnosis"**  GROUP ROUTES // example.app/public/api/diagnosis/patientListAll
+    - [**"new"**, **POST**, ('diagnosis => string|max:2000'','personalidentification' => string|DNI|NIE), Return => Los datos del paciente y el diagnostico, Crea un nuevo diagnostico sobre un paciente dado.]
+    - [**"patientListAll"**, **POST**, ('personalidentification', Return => Nombre y diagnosticos del paciente, Muestra los diagnosticos de un paciente.]
 
 ## Returns
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+<p>Cada vez que se devuelva una respuesta del servidor, siempre lo hara acompaño del parametro **error**, con un **true|false** indicando
+si la llamada se ha llevado correctamente a cabo, o por el contrario, estara acompañado de un mensaje de error en **msg**.
+Tambien es posible que devuelva un mensaje de error distinto al llevar a cabo la validacion de los parametros, indicando cual es erroneo.
+</p>
 
 ## Learning Laravel
 
