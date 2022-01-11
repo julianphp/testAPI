@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\api\AuthLoginController;
 use App\Http\Controllers\api\PatientsController;
 use \App\Http\Controllers\api\DiagnosisController;
+use App\Http\Controllers\api\RegisterUserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,7 +26,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         return response()->json([
             'error' => 'Url incorrecta.'], 404);
     });
-    Route::post('login',[\App\Http\Controllers\api\AuthLoginController::class,'login']);
+
+    Route::post('register',[RegisterUserController::class,'new']);
+    Route::post('login',[AuthLoginController::class,'login']);
+    Route::get('logout',[AuthLoginController::class,'logout'])->middleware('auth:api');
 
     Route::prefix('patient')->group(function (){
 

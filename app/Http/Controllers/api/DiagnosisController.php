@@ -11,14 +11,20 @@ use Illuminate\Support\Facades\Log;
 
 class DiagnosisController extends Controller
 {
-    //
-    public function new(Request $request){
-        $patient = Patients::dni($request->input('dni'))->first();
-        Log::channel('daily')->debug($request->input('dni'));
+    /**
+     * Create a new diagnosis for a given patient.
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *  POST ['personalidentification','description'] /api/diagnosis/new
+     */
+    public function new(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $patient = Patients::dni($request->input('personalidentification'))->first();
+
         if (!$patient){
             return response()->json([
                 'error' => true,
-                'msg' => 'El paciente solicitado no existe'
+                'msg' => trans('patients.patient_not_exist')
             ]);
         }
 
@@ -34,18 +40,26 @@ class DiagnosisController extends Controller
         return response()->json([
             'error' => false,
             'fullName' => $patient->fullName,
-            'dni' => $patient->DNI,
-            'description' => $diagnosis->description,
+            'personalIdentification' => $patient->personalIdentification,
+            'diagnosis' => $diagnosis->description,
         ]);
 
     }
-    public function patientListAll(Request $request){
-        $patient = Patients::dni($request->input('dni'))->first();
+
+    /**
+     * List all diagnosis for a given patient.
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * POST ['personalidentification']  /api/diagnosis/patientListAll
+     */
+    public function patientListAll(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $patient = Patients::dni($request->input('personalidentification'))->first();
 
         if (!$patient){
             return response()->json([
                 'error' => true,
-                'msg' => 'El paciente solicitado no existe'
+                'msg' => trans('patients.patient_not_exist')
             ]);
         }
         $response = [
@@ -53,16 +67,10 @@ class DiagnosisController extends Controller
             'fullName' => $patient->fullName,
             'diagnosis' => []
             ];
-        $response['diagnosis'] += Diagnosis::select('description','date')
+        $response['diagnosis'] += Diagnosis::select('description AS diagnosis','date')
                                             ->where('idPatient',$patient->id)
                                             ->get()->toArray();
-        /*
-        $response['diagnosis'] +=  DB::table('patients as pt')
-                            ->join('diagnosis as dg','pt.id','=','dg.idPatient')
-                            ->select('dg.description', 'dg.date')
-                            ->where('pt.DNI', $patient->DNI)
-                            ->get()->toArray();
-        */
+
         return response()->json($response);
     }
 }

@@ -12,39 +12,39 @@ use function response;
 
 class PatientsController extends Controller
 {
-    public function new(Request $request){
+    /**
+     * Create a new patient.
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * POST ['fullname','personalidentification'] /api/patient/new
+     */
+    public function new(Request $request): \Illuminate\Http\JsonResponse
+    {
         $response = [];
 
         $fullName = $request->input('fullname');
-        $dni = $request->input('dni');
+        $dni = $request->input('personalidentification');
         $request->validate([
             'fullname' => 'regex:/^[\pL\s\-]+$/u|max:75',
-            'dni' => 'unique:patients,DNI'
+            'dni' => ['unique:patients,personalIdentification','regex:/^([0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKE])|([XYZ][0-9]{7}[TRWAGMYFPDXBNJZSQVHLCKE])$/i']
             //'dni' => 'regex:/^[0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKE]$/i'
         ],[
             'fullname.regex' => trans('patients.error_fullname'),
             'fullname.max' => trans('patients.error_fullname'),
-            'dni.unique' => 'willyyyyy',
+            'dni.unique' => trans('patients.error_personalid_taken'),
+            'dni.regex' => trans('patients.error_personalid_incorrect')
         ]);
 
-        //solo aceptamos DNI no NIE
-        //TODO realizar comprobacion
-        if ( strlen($request->input('dni')) !== 9 ){
-            $response += [
-                'error' => true,
-                'details' => 'DNI no es correcto.'
-            ];
-        }
         if (empty($response)){
             $patient = new Patients();
             $patient->fullName = $fullName;
-            $patient->DNI = $dni;
+            $patient->personalIdentification = $dni;
             $patient->save();
 
             $response += [
                 'error' => false,
                 'fullName' => $patient->fullName,
-                'DNI' => $patient->DNI,
+                'personalIdentification' => $patient->personalIdentification,
             ];
             Log::info($patient);
 
@@ -53,13 +53,20 @@ class PatientsController extends Controller
         return response()->json($response,200);
     }
 
-    public function edit(Request $request){
-        $patient = Patients::dni($request->input('dni'))->first();
+    /**
+     * Edit the name of a given patient
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * POST ['personalidentification','fullname'] /api/patient/edit
+     */
+    public function edit(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $patient = Patients::dni($request->input('personalidentification'))->first();
 
         if (!$patient) {
             return response()->json([
                 'error' => true,
-                'msg' => 'El paciente solicitado no existe'
+                'msg' => trans('patients.patient_not_exist')
             ]);
         }
         $request->validate([
@@ -73,33 +80,47 @@ class PatientsController extends Controller
 
         return response()->json([
             'fullName' => $patient->fullName,
-            'dni' => $patient->DNI
+            'dni' => $patient->personalIdentification
         ]);
     }
 
-    public function detail(Request $request){
-        $patient = Patients::dni($request->input('dni'))->first();
+    /**
+     * Return the details(fullname, personalidentification) of a given patient.
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * POST ['personalidentification'] /api/patient/detail
+     */
+    public function detail(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $patient = Patients::dni($request->input('personalidentification'))->first();
 
         if (!$patient) {
             return response()->json([
                 'error' => true,
-                'msg' => 'El paciente solicitado no existe'
+                'msg' => trans('patients.patient_not_exist')
             ]);
         }
         return response()->json([
             'error' => false,
             'fullName' => $patient->fullName,
-            'DNI' => $patient->DNI,
+            'personalIdentification' => $patient->personalIdentification,
         ]);
     }
 
+    /**
+     * Delete a given patient. If have diagnosis associated, it will not delete
+     * To force delete a patient with diagnosis, include "force=1" param in POST.
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse|void
+     * POST ['personalidentification','force'] /api/patient/delete
+     */
     public function delete(Request $request){
-        $patient = Patients::dni($request->input('dni'))->first();
+        $patient = Patients::dni($request->input('personalidentification'))->first();
 
         if (!$patient) {
             return response()->json([
                 'error' => true,
-                'msg' => 'El paciente solicitado no existe.',
+                'msg' => trans('patients.patient_not_exist')
             ]);
         }
 
@@ -108,32 +129,38 @@ class PatientsController extends Controller
 
             return response()->json([
                 'error' => false,
-                'msg' => 'Se han borrado todos los datos relacionados con el paciente.'
+                'msg' => trans('patients.deleted_all_data_associated')
             ]);
         }
 
-        // si el paciente tiene algun diagnostico entonces no se podra borrar.
+        // if the patient has a diagnosis then it cannot be deleted.
         if ($patient->Diagnosis->count() > 0 && (int)$request->input('force') !== 1) {
             return response()->json([
                 'error' => true,
-                'msg' => 'El paciente no se puede borrar debido a que tiene diagnosticos asociados. 123'
+                'msg' => trans('patients.cant_delete_patient_with_diagnosis')
             ]);
         }
 
-        // si se indica realizar un force en la peticion, entonces borrara tambien los diagnosticos.
+        // if a force is indicated in the request, then it will delete the diagnostics as well.
         if ((int)$request->input('force') === 1){
             Diagnosis::where('id', \Arr::pluck($patient->Diagnosis, 'id'))->delete();
             $patient->delete();
 
             return response()->json([
                 'error' => false,
-                'msg' => 'Se ha borrado todos los datos relacionados con el paciente.'
+                'msg' => trans('patients.deleted_all_data_associated')
             ]);
         }
     }
 
-   public function listAll(){
-        $allPatients = Patients::select('fullName','DNI')->get()->toArray();
+    /**
+     * List all patients, return fullNane and personalidentification.
+     * @return \Illuminate\Http\JsonResponse
+     * GET /api/patient/listALl
+     */
+   public function listAll(): \Illuminate\Http\JsonResponse
+   {
+        $allPatients = Patients::select('fullName','personalIdentification')->get()->toArray();
         $response = ['error' => false];
         $response += $allPatients;
         return response()->json($response);

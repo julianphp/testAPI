@@ -9,7 +9,7 @@ class Patients extends Model
 {
     protected $table = "patients";
     protected $primaryKey = "id";
-    protected $fillable = ["fullName","DNI"];
+    protected $fillable = ["fullName","personalIdentification"];
 
 
     public function Diagnosis(){
@@ -17,7 +17,7 @@ class Patients extends Model
     }
 
     public function scopeDni($query, $dni){
-            return $query->where('DNI',(string)$dni);
+            return $query->where('personalIdentification',(string)$dni);
     }
 
 
