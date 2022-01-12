@@ -9,11 +9,11 @@ autorización.
 
 ## Indice
 - [Despliegue](#Despliegue)
-- [Headers](#Parametros necesarios en Headers)
-- [Uso de la API](#Uso de la API)
+- [Headers](#Parametros-necesarios-en-Headers)
+- [Uso de la API](#Uso-de-la-API)
 - [Returns](#Returns)
 - [Test](#Test)
-- [Base de Datos](#Base de Datos)
+- [Base de Datos](#Base-de-Datos)
 
 <br>
 Se ha optado por realizarlo sobre Laravel usando de referencia un modelo "MVC", dada la facilidad para el despliegue de un servidor 
