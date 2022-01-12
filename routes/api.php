@@ -34,7 +34,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     Route::prefix('patient')->group(function (){
 
         Route::group(['middleware' => 'auth:api'], function(){
-            Route::post('new', [PatientsController::class,'new']); // ["fullname","dni"]
+            Route::post('new', [PatientsController::class,'new']);
             Route::post('edit',[PatientsController::class,'edit']);
             Route::post('details',[PatientsController::class,'detail']);
             Route::post('delete',[PatientsController::class,'delete']);

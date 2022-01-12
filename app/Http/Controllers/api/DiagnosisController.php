@@ -30,7 +30,7 @@ class DiagnosisController extends Controller
             return response()->json([
                 'error' => true,
                 'msg' => trans('patients.patient_not_exist')
-            ]);
+            ],404);
         }
 
         $request->validate([
@@ -87,7 +87,7 @@ class DiagnosisController extends Controller
             return response()->json([
                 'error' => true,
                 'msg' => trans('patients.patient_not_exist')
-            ]);
+            ],404);
         }
         $response = [
             'error' => false,

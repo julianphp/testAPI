@@ -80,7 +80,7 @@ class PatientsController extends Controller
             return response()->json([
                 'error' => true,
                 'msg' => trans('patients.patient_not_exist')
-            ]);
+            ],404);
         }
         $request->validate([
             'fullname' => 'regex:/^[\pL\s\.\'\-]+$/u|max:255'
@@ -137,7 +137,7 @@ class PatientsController extends Controller
             return response()->json([
                 'error' => true,
                 'msg' => trans('patients.patient_not_exist')
-            ]);
+            ],404);
         }
         return response()->json([
             'error' => false,
@@ -156,12 +156,12 @@ class PatientsController extends Controller
      */
     public function delete(Request $request){
         $patient = Patients::dni($request->input('personalidentification'))->first();
-
+        Log::channel('daily')->info($request->input('personalidentification'));
         if (!$patient) {
             return response()->json([
                 'error' => true,
                 'msg' => trans('patients.patient_not_exist')
-            ]);
+            ],404);
         }
 
         if ($patient->Diagnosis->count() === 0){

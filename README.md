@@ -11,8 +11,8 @@ autorización.
 Para el despliegue se va a realizar sobre Ubuntu 20.04 y Apache2. Se hace uso de PHP 8.1, Composer 2.x y MariaDB 10.X con PHPMyAdmin.
 Se han ejecutado las llamadas con **Postman**.
 <br>
-Aunque siempre podremos realizar un despliegue en pruebas con ** php artisan serve**, el cual nos mostrara una ruta y puerto local en donde 
-se estará ejecutando el servicio, por la facilidad de este, realizaremos la ejecución sobre este.
+Aunque siempre podremos realizar un despliegue fácil y rápido con **php artisan serve**, realiza un despliegue local para pre-producción el cual
+nos será suficiente para demostrar el servicio.
 <br>
 Para instalar composer, visite: [Tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-composer-on-ubuntu-20-04-es)
 <br>
