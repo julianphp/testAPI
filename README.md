@@ -6,6 +6,15 @@
 Este mini-proyecto consiste en la creación de una API sobre Laravel 8 y PHP 7.4/8.1, sobre las que realiza operaciones 
 sobre pacientes y diagnósticos, en el cual, para realizar las operaciones, será necesario contar con un Token de
 autorización.
+
+## Indice
+- [Despliegue](#Despliegue)
+- [Headers](#Parametros necesarios en Headers)
+- [Uso de la API](#Uso de la API)
+- [Returns](#Returns)
+- [Test](#Test)
+- [Base de Datos](#Base de Datos)
+
 <br>
 Se ha optado por realizarlo sobre Laravel usando de referencia un modelo "MVC", dada la facilidad para el despliegue de un servidor 
 funciona, tanto web como API como en este caso. Además de integrar un control de "routing" para una fácil gestión de las rutas, herramientas de 
