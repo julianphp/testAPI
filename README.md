@@ -6,6 +6,10 @@
 Este mini-proyecto consiste en la creación de una API sobre Laravel 8 y PHP 7.4/8.1, sobre las que realiza operaciones 
 sobre pacientes y diagnósticos, en el cual, para realizar las operaciones, será necesario contar con un Token de
 autorización.
+<br>
+Se ha optado por realizarlo sobre Laravel usando de referencia un modelo "MVC", dada la facilidad para el despliegue de un servidor 
+funciona, tanto web como API como en este caso. Además de integrar un control de "routing" para una fácil gestión de las rutas, herramientas de 
+test unitarios, "eloquent ORM" para las consultas a la Bade de Datos, usos de "middleware" para aplicar diferentes reglas, entre otras. 
 
 ## Despliegue
 Para el despliegue se va a realizar sobre Ubuntu 20.04 y Apache2. Se hace uso de PHP 8.1, Composer 2.x y MariaDB 10.X con PHPMyAdmin.
@@ -55,8 +59,8 @@ Podemos comprobar que funciona si entramos en la url que nos muestra y ver el in
 > **Recuerda!** Recuerda que nuestra base para ejecutar las peticiones será tal que http://127.0.0.1:8000/api/
 
 ## Uso de la API
-<p>El desarrollo de la API, se ha realizado mediante la librería de laravel/passport, la cual nos proporciona un amplio
-soporte para el uso de <b>OAuth2</b>.</p>
+<p>El desarrollo de la API, se ha realizado mediante la librería de laravel/passport, que nos proporciona un amplio
+soporte para el uso de <b>OAuth2</b>.</p>, además de una posibilidad a futuro de mayor modificación y control sobre las autorizaciones.
 <p>El servicio cuenta con distintas operaciones a realizar, principalmente sobre los pacientes y sus diagnósticos.</p>
 <p>Para la realización del proyecto se ha usado <b>Postman</b>.
 <p>Primero será necesario contar con un usuario registrado en la plataforma.</p>
@@ -104,6 +108,10 @@ Podemos ejecutar los test, en nuestra carpeta del proyecto con **"php artisan te
 
 ## Base de Datos 
 Se ha realizado sobre MariaDB 10.6. <br>
+Para las consultas en la parte de PHP, se van a llevar a cabo mediante el uso de "Eloquent ORM", con el uso de modelos y relaciones, 
+ya que nos permite realizar las consultas más básica y cotidianas de manera más fácil y rápida, pero siempre con la oportunidad de poder realizar nuestras 
+propias consultas en caso de ser necesario con el Facade "DB".
+<br>
 Se ha usado la codificación "utf8_unicode_ci". La DB se encuentra en **"/storage/db/db_service.sql"**, necesitará crear una nueva DB para poder importarla.
 <p>
 Para guardar el historial de ediciones/creaciones sobre las tablas patients y diagnosis, se ha optado en realizarlo sobre la propia Base de Datos, y 
