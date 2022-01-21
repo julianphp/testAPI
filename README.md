@@ -101,10 +101,8 @@ y el idioma preferido.</p>
 
 ## Returns
 <p>Cada vez que se devuelva una respuesta del servidor, siempre lo hará acompaño del parámetro <b>error</b>, con un <b>true|false</b> indicando
-si la llamada se ha llevado correctamente a cabo, o por el contrario, estará acompañado de un mensaje de error en <b>msg</b>.</p>
+si la llamada se ha ejecutado correctamente a cabo, o por el contrario, estará acompañado de un mensaje de error o un array en <b>msg</b>.</p>
 <p>
-También es posible que devuelva un mensaje de error distinto al llevar a cabo la validación de los parámetros, indicando cuál es erróneo.
-</p>
 
 ## Test
 Se ha llevado a cabo la realización de test para el testeo de las funciones descritas anteriormente. Se pueden encontrar en

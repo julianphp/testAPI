@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class DiagnosisController extends Controller
 {
@@ -32,10 +33,16 @@ class DiagnosisController extends Controller
                 'msg' => trans('patients.patient_not_exist')
             ],404);
         }
-
-        $request->validate([
+        $validator = Validator::make($request->all(),[
             'diagnosis' => 'string|max:2000'
         ]);
+        if ($validator->errors()){
+            $customReturn = ['error' => true];
+            $customReturn += ['msg' => $validator->errors()];
+
+            return response()->json($customReturn,400);
+        }
+
         try {
             DB::beginTransaction();
             $diagnosis = new Diagnosis();

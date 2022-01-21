@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
+use Illuminate\Support\Facades\Validator;
+
 use function response;
 
 class PatientsController extends Controller
@@ -29,15 +31,21 @@ class PatientsController extends Controller
 
         $fullName = $request->input('fullname');
         $personalidentification = $request->input('personalidentification');
-        $request->validate([
+
+        $validator = \Validator::make($request->all(),[
             'fullname' => 'regex:/^[\pL\s\.\'\-]+$/u|max:255',
             'personalidentification' => ['unique:patients,personalIdentification','regex:/^([0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKE])|([XYZ][0-9]{7}[TRWAGMYFPDXBNJZSQVHLCKE])$/i']
         ],[
             'fullname.regex' => trans('patients.error_fullname_format'),
             'fullname.max' => trans('patients.error_fullname'),
-            'personalIdentification.unique' => trans('patients.error_personalid_taken'),
-            'personalIdentification.regex' => trans('patients.error_personalid_incorrect')
+            'personalidentification.unique' => trans('patients.error_personalid_taken'),
+            'personalidentification.regex' => trans('patients.error_personalid_incorrect')
         ]);
+        if ($validator->errors()){
+            $customReturn = ['error' => true];
+            $customReturn += ['msg' => $validator->errors()];
+            return response()->json($customReturn, 400);
+        }
         if (empty($response)){
             try {
                 DB::beginTransaction();
@@ -82,12 +90,18 @@ class PatientsController extends Controller
                 'msg' => trans('patients.patient_not_exist')
             ],404);
         }
-        $request->validate([
+        $validation = Validator::make($request->all(),[
             'fullname' => 'regex:/^[\pL\s\.\'\-]+$/u|max:255'
         ],[
             'fullname.regex' => trans('patients.error_fullname'),
             'fullname.max' => trans('patients.error_fullname'),
         ]);
+        if ($validation->errors()){
+            $customReturn = ['error' => true];
+            $customReturn += ['msg' => $validation->errors()];
+
+            return response()->json($customReturn,400);
+        }
 
         try {
 

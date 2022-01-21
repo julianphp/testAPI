@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class RegisterUserController extends Controller
 {
@@ -20,10 +21,17 @@ class RegisterUserController extends Controller
      */
     public function new(Request $request): \Illuminate\Http\JsonResponse
     {
-        $request->validate([
-           'email' => 'email',
-           'password' => 'min:4|string'
+
+        $validator = Validator::make($request->all(),[
+            'email' => 'email',
+            'password' => 'min:4|string'
         ]);
+        if ($validator->errors()){
+            $customReturn = ['error' => true];
+            $customReturn += ['msg' => $validator->errors()];
+
+            return response()->json($customReturn,400);
+        }
 
         try {
             $user = new User();
